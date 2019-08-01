@@ -29,6 +29,7 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(value = {TokenExpireException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseData constraintTokenExpireException(TokenExpireException ex) {
+        log.error("constraintTokenExpireException");
         log.error(ex.getMessage());
         return ResponseDataUtils.buildError(ex.getErrorCode(), ex.getErrorMsg());
     }
@@ -36,6 +37,7 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(value = {BusinessException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseData constraintBusinessException(BusinessException ex) {
+        log.error("constraintBusinessException");
         log.error(ex.getMessage());
         return ResponseDataUtils.buildError(ex);
     }
@@ -43,7 +45,8 @@ public class GlobalControllerExceptionHandler {
 
     @ExceptionHandler(value = ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseData error(ConstraintViolationException ex) {
+    public ResponseData errorConstraintViolationException(ConstraintViolationException ex) {
+        log.error("errorConstraintViolationException");
         log.error(ex.getMessage());
         Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
         List<String> errorMsg = new LinkedList<>();
@@ -58,6 +61,7 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(value = {FeignException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseData constraintFeignException(Exception ex) {
+        log.error("constraintFeignException");
         log.error(ex.getMessage());
         return ResponseDataUtils.buildError(HttpStatus.INTERNAL_SERVER_ERROR.value() + "", ex.getMessage());
     }
@@ -66,6 +70,7 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseData constraintException(Exception ex) {
+        log.error("constraintException");
         log.error(ex.getMessage());
         return ResponseDataUtils.buildError(HttpStatus.INTERNAL_SERVER_ERROR.value() + "", ex.getMessage());
     }
