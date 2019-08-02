@@ -28,26 +28,26 @@ public class GlobalControllerExceptionHandler {
 
     @ExceptionHandler(value = {TokenExpireException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseData constraintTokenExpireException(TokenExpireException ex) {
-        log.error("constraintTokenExpireException");
+    public ResponseData cutTokenExpireException(TokenExpireException ex) {
+        log.error("cutTokenExpireException");
         log.error(ex.getMessage());
+        ex.printStackTrace();
         return ResponseDataUtils.buildError(ex.getErrorCode(), ex.getErrorMsg());
     }
 
     @ExceptionHandler(value = {BusinessException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseData constraintBusinessException(BusinessException ex) {
-        log.error("constraintBusinessException");
-        log.error(ex.getMessage());
+    public ResponseData cutBusinessException(BusinessException ex) {
+        log.error("cutBusinessException");
+        ex.printStackTrace();
         return ResponseDataUtils.buildError(ex);
     }
 
 
     @ExceptionHandler(value = ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseData errorConstraintViolationException(ConstraintViolationException ex) {
-        log.error("errorConstraintViolationException");
-        log.error(ex.getMessage());
+    public ResponseData cutConstraintViolationException(ConstraintViolationException ex) {
+        log.error("cutConstraintViolationException");
         Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
         List<String> errorMsg = new LinkedList<>();
         if (!CollectionUtils.isEmpty(constraintViolations)) {
@@ -55,23 +55,25 @@ public class GlobalControllerExceptionHandler {
                 errorMsg.add(violation.getMessage());
             }
         }
-        return ResponseDataUtils.buildError(errorMsg.toString());
+        log.error(errorMsg.toString());
+        return ResponseDataUtils.buildError(errorMsg.toString()).setClazz(ex);
     }
+
+
 
     @ExceptionHandler(value = {FeignException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseData constraintFeignException(Exception ex) {
-        log.error("constraintFeignException");
+    public ResponseData cutFeignException(FeignException ex) {
+        log.error("cutFeignException");
         log.error(ex.getMessage());
-        return ResponseDataUtils.buildError(HttpStatus.INTERNAL_SERVER_ERROR.value() + "", ex.getMessage());
+        return ResponseDataUtils.buildError(HttpStatus.INTERNAL_SERVER_ERROR.value() + "", ex.getMessage()).setClazz(ex);
     }
-
 
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseData constraintException(Exception ex) {
-        log.error("constraintException");
-        log.error(ex.getMessage());
-        return ResponseDataUtils.buildError(HttpStatus.INTERNAL_SERVER_ERROR.value() + "", ex.getMessage());
+    public ResponseData cutException(Exception ex) {
+        log.error("cutException");
+        ex.printStackTrace();
+        return ResponseDataUtils.buildError(HttpStatus.INTERNAL_SERVER_ERROR.value() + "", ex.getMessage()).setClazz(ex);
     }
 }

@@ -91,12 +91,13 @@ public class ResponseData<T> extends LinkedHashMap<String, Object> {
         this.put(RESP_MSG, resp_msg);
     }
 
-    public void setClazz(Exception e){
+    public ResponseData<T> setClazz(Exception e){
         this.put(CLAZZ,e.getClass().getName());
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
         pw.close();
         this.put(CAUSE,sw.toString().split("\n"));
+        return this;
     }
 }
