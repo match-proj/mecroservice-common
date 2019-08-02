@@ -1,5 +1,6 @@
 package com.match.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,6 +14,8 @@ public class PageResult<T> {
 
 
     public PageResult() {
+        this.total = 0L;
+        this.rows = new ArrayList<>();
     }
 
     public PageResult(Long total, List<T> rows) {
