@@ -1,7 +1,9 @@
 package com.match.common.exception;
 
 import com.match.common.ResponseData;
+import com.match.common.feign.FeignInvokException;
 import com.match.common.utils.ResponseDataUtils;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,7 +32,6 @@ public class GlobalControllerExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseData cutTokenExpireException(TokenExpireException ex) {
         log.error("cutTokenExpireException");
-        log.error(ex.getMessage());
         ex.printStackTrace();
         return ResponseDataUtils.buildError(ex.getErrorCode(), ex.getErrorMsg());
     }
@@ -65,9 +66,19 @@ public class GlobalControllerExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseData cutFeignException(FeignException ex) {
         log.error("cutFeignException");
-        log.error(ex.getMessage());
+        ex.printStackTrace();
         return ResponseDataUtils.buildError(HttpStatus.INTERNAL_SERVER_ERROR.value() + "", ex.getMessage()).setClazz(ex);
     }
+
+
+    @ExceptionHandler(value = {HystrixRuntimeException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseData cutHystrixRuntimeException(HystrixRuntimeException ex) {
+        log.error("cutHystrixRuntimeException");
+        ex.printStackTrace();
+        return ResponseDataUtils.buildError(HttpStatus.INTERNAL_SERVER_ERROR.value() + "","服务不可用");
+    }
+
 
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -21,6 +21,9 @@ public class FeignBasicAuthRequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate template) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if(attributes == null){
+            return;
+        }
         HttpServletRequest request = attributes.getRequest();
         Enumeration<String> headerNames = request.getHeaderNames();
         if (headerNames != null) {
@@ -29,7 +32,7 @@ public class FeignBasicAuthRequestInterceptor implements RequestInterceptor {
                 String values = request.getHeader(name);
                 template.header(name, values);
             }
-//            logger.info("feign interceptor header:{}",template);
+            logger.info("feign interceptor header:{}",template);
         }
 
         // 转发参数
